@@ -18,8 +18,8 @@ FilterPP: &FilterPP "Expire|到期|剩余|Traffic|网址|官网|过期|地址"
 # https://www.qualcomm.cn/generate_204
 UrlTest:  &UrlTest 'https://www.gstatic.com/generate_204'
 
-PU: &PU { exclude-filter: *FilterPP, type: http, proxy: DIRECT, interval: 86400, health-check: { enable: true, url: *UrlTest, interval: 300 } }
-PF: &PF { exclude-filter: *FilterPP, type: file, proxy: DIRECT, interval: 86400, health-check: { enable: true, url: *UrlTest, interval: 300 } }
+PU: &PU { exclude-filter: *FilterPP, type: http, proxy: DIRECT, interval: 600, health-check: { enable: true, url: *UrlTest, interval: 300 } }
+PF: &PF { exclude-filter: *FilterPP, type: file, proxy: DIRECT, interval: 600, health-check: { enable: true, url: *UrlTest, interval: 300 } }
 # 官方配置文档: https://wiki.metacubex.one/config/proxy-providers/
 proxy-providers:
   main:
@@ -31,6 +31,8 @@ proxy-providers:
         - "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
       token:
         - "*********"
+      # X-Age-Public-Key:
+      # - 'age1xh86kh9v23vattr58yedspm3f57sxvnswu9krr6ns438amekx5gsd09uma'
     override:
       udp: true
       additional-prefix: '主-'  # 订阅节点前缀，方便区分该节点属于哪个订阅链接 例如`主-香港🇭🇰
