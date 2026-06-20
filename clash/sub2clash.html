@@ -1,0 +1,292 @@
+// ============================================================
+// 多机场订阅解密 Worker
+// 使用方式：
+//   飞鸟:     /?airport=flybird&token=BASE64(YOUR_TOKEN)
+//   超实惠:   /?airport=ssbb&token=BASE64(YOUR_TOKEN)
+//   POST解密: POST / (body = 密文, ?airport=xxx 指定密钥)
+// ============================================================
+
+// ── 机场配置表 ──────────────────────────────────────────────
+const AIRPORTS = {
+  flybird: {
+    name: "飞鸟",
+    api: "https://fbapi.apiv2.a047.com/api/v1/client/subscribe?token=",
+    key: "14f521a32997b257",
+    iv:  "d217125f4b9cc9c8",
+    ua:  "NetFlow/v3.0.3 clash-verge Platform/macos",
+  },
+  ssbb: {
+    name: "超实惠加速",
+    api: "https://ssbb.lostnet.cn/statics/data.json?token=",
+    key: "4422a60e08c97f30",
+    iv:  "8c97f304422a60e0",
+    ua:  "ClashforWindows/0.20.39 Win32 clash-meta",
+  },
+};
+
+// ── 默认机场（可改） ─────────────────────────────────────────
+const DEFAULT_AIRPORT = "flybird";
+
+// ────────────────────────────────────────────────────────────
+
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+const PASSTHROUGH_HEADERS = [
+  "subscription-userinfo",
+  "profile-update-interval",
+  "profile-web-page-url",
+  "content-disposition",
+];
+
+// Base64 → Uint8Array（宽松，支持 URL-safe）
+function b64ToBytes(b64) {
+  const s = b64.replace(/-/g, "+").replace(/_/g, "/").replace(/\s+/g, "");
+  const pad = s.length % 4;
+  const padded = pad ? s + "=".repeat(4 - pad) : s;
+  const bin = atob(padded);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+// Base64 → UTF-8 字符串（兼容中文/特殊字符）
+function decodeBase64Utf8(str) {
+  return decodeURIComponent(escape(atob(str)));
+}
+
+// AES-128-CBC 解密
+async function decryptProfile(ciphertext, cfg) {
+  const outer = b64ToBytes(ciphertext);
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(cfg.key),
+    { name: "AES-CBC", length: 128 },
+    false,
+    ["decrypt"]
+  );
+
+  const pt = await crypto.subtle.decrypt(
+    { name: "AES-CBC", iv: enc.encode(cfg.iv) },
+    key,
+    outer
+  );
+
+  const innerB64 = dec.decode(pt);
+
+  // 解密结果可能还包一层 Base64
+  try {
+    return dec.decode(b64ToBytes(innerB64));
+  } catch {
+    return innerB64;
+  }
+}
+
+// ── Web UI ───────────────────────────────────────────────────
+function renderPage(workerUrl) {
+  const airportOptions = Object.entries(AIRPORTS)
+    .map(([k, v]) => `<option value="${k}">${v.name}</option>`)
+    .join("");
+
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>订阅解密工具</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;min-height:100vh;background:#0f172a;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  display:flex;justify-content:center;align-items:center;color:#fff}
+.card{width:100%;max-width:720px;background:#111827;border-radius:20px;
+  padding:28px;box-shadow:0 0 40px rgba(0,0,0,.35)}
+h1{margin-top:0;margin-bottom:10px;font-size:28px}
+.desc{color:#94a3b8;line-height:1.6;margin-bottom:20px}
+label{display:block;margin-bottom:6px;color:#94a3b8;font-size:13px}
+select,input{width:100%;border:none;outline:none;border-radius:14px;
+  padding:14px 16px;background:#1e293b;color:#fff;font-size:14px;line-height:1.6}
+select{margin-bottom:14px;cursor:pointer}
+input{margin-bottom:14px}
+button{width:100%;margin-top:16px;border:none;border-radius:14px;
+  padding:14px;font-size:16px;cursor:pointer;transition:.2s;color:#fff}
+.generate{background:#2563eb}.generate:hover{background:#1d4ed8}
+.copy{background:#10b981}.copy:hover{background:#059669}
+.result{margin-top:24px}
+.output{margin-top:10px;background:#1e293b;border-radius:14px;padding:16px;
+  word-break:break-all;color:#38bdf8;line-height:1.6}
+.tip{margin-top:14px;color:#94a3b8;font-size:13px}
+.footer{margin-top:24px;text-align:center;color:#64748b;font-size:13px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>订阅解密工具</h1>
+  <div class="desc">选择机场，填入 Token，生成 Clash / mihomo 订阅链接</div>
+
+  <label>机场</label>
+  <select id="airport">${airportOptions}</select>
+
+  <label>Token</label>
+  <input id="token" type="text" placeholder="粘贴你的订阅 Token"/>
+
+  <button class="generate" onclick="generateLink()">生成订阅链接</button>
+
+  <div class="result" id="result" style="display:none">
+    <div>生成结果：</div>
+    <div class="output" id="output"></div>
+    <button class="copy" onclick="copyLink()">复制链接</button>
+    <div class="tip">将复制后的链接直接导入 Clash / mihomo 即可</div>
+  </div>
+
+  <div class="footer">Cloudflare Worker · 多机场解密</div>
+</div>
+
+<script>
+function generateLink() {
+  const airport = document.getElementById('airport').value;
+  const token   = document.getElementById('token').value.trim();
+  if (!token) { alert('请填入 Token'); return; }
+
+  // token → Base64（处理特殊字符）
+  const b64Token = btoa(unescape(encodeURIComponent(token)));
+
+  const url = '${workerUrl}?airport=' + airport + '&token=' + b64Token;
+  document.getElementById('output').innerText = url;
+  document.getElementById('result').style.display = 'block';
+}
+
+async function copyLink() {
+  const text = document.getElementById('output').innerText;
+  try { await navigator.clipboard.writeText(text); alert('复制成功'); }
+  catch { alert('复制失败，请手动复制'); }
+}
+</script>
+</body>
+</html>`;
+}
+
+// ── 主入口 ───────────────────────────────────────────────────
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+
+    // ── 首页 UI ──────────────────────────────────────────────
+    if (
+      request.method === "GET" &&
+      !url.searchParams.has("token") &&
+      !url.searchParams.has("url") &&
+      !url.searchParams.has("b64")
+    ) {
+      return new Response(renderPage(url.origin + "/"), {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
+    }
+
+    try {
+      // ── 选择机场配置 ──────────────────────────────────────
+      const airportKey = url.searchParams.get("airport") ?? DEFAULT_AIRPORT;
+      const cfg = AIRPORTS[airportKey];
+      if (!cfg) {
+        return new Response(`unknown airport: ${airportKey}`, { status: 400 });
+      }
+
+      const respHeaders = {
+        "Content-Type": "text/yaml; charset=utf-8",
+        "Cache-Control": "no-store",
+      };
+
+      let ciphertext;
+
+      // ── POST 模式：直接解密 body ──────────────────────────
+      if (request.method === "POST") {
+        ciphertext = await request.text();
+
+      } else {
+        // ── 构建上游 URL ──────────────────────────────────
+        let upstream = "";
+
+        if (url.searchParams.has("token")) {
+          // Base64 解码还原真实 token
+          const rawToken = decodeBase64Utf8(url.searchParams.get("token"));
+          upstream = cfg.api + encodeURIComponent(rawToken);
+
+        } else if (url.searchParams.has("b64")) {
+          // 兼容旧版 base64 整链接模式
+          upstream = decodeBase64Utf8(url.searchParams.get("b64"));
+
+        } else if (url.searchParams.has("url")) {
+          // 兼容旧版 url 模式
+          upstream = url.searchParams.get("url");
+        }
+
+        if (!upstream) {
+          return new Response("missing token or url", { status: 400 });
+        }
+
+        // SSRF 防护：只允许 HTTPS
+        if (!/^https:\/\//i.test(upstream)) {
+          return new Response("only https allowed", { status: 400 });
+        }
+
+        // 转发客户端请求头，过滤掉 CF/代理注入的头
+        const forwardHeaders = new Headers();
+        const skipHeaders = new Set([
+          "host", "cf-connecting-ip", "cf-ipcountry", "cf-ray",
+          "cf-visitor", "x-forwarded-for", "x-forwarded-proto",
+          "x-real-ip", "connection", "content-length",
+        ]);
+        for (const [k, v] of request.headers) {
+          if (!skipHeaders.has(k.toLowerCase())) {
+            forwardHeaders.set(k, v);
+          }
+        }
+        // 用机场指定 UA 覆盖
+        forwardHeaders.set("User-Agent", cfg.ua);
+
+        // 超时控制
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 10000);
+
+        const upResp = await fetch(upstream, {
+          headers: forwardHeaders,
+          signal: controller.signal,
+          cf: { cacheTtl: 0, cacheEverything: false },
+        });
+
+        clearTimeout(timer);
+
+        if (!upResp.ok) {
+          return new Response(`upstream ${upResp.status}`, { status: 502 });
+        }
+
+        // 透传订阅头
+        for (const h of PASSTHROUGH_HEADERS) {
+          const v = upResp.headers.get(h);
+          if (v) respHeaders[h] = v;
+        }
+
+        ciphertext = await upResp.text();
+      }
+
+      // ── 已是明文 YAML，直接返回 ──────────────────────────
+      if (
+        ciphertext.includes("proxies:") ||
+        ciphertext.includes("proxy-groups:")
+      ) {
+        return new Response(ciphertext, { headers: respHeaders });
+      }
+
+      // ── 解密 ──────────────────────────────────────────────
+      const yaml = await decryptProfile(ciphertext, cfg);
+      return new Response(yaml, { headers: respHeaders });
+
+    } catch (e) {
+      return new Response(`decrypt failed: ${e.message}`, {
+        status: 400,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+      });
+    }
+  },
+};
