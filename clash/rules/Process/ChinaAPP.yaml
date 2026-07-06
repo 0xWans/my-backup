@@ -25,6 +25,7 @@ payload:
   - PROCESS-NAME,com.phoenix.read
   - PROCESS-NAME,com.dragon.read
   - PROCESS-NAME,com.ss.android.auto
+  - PROCESS-NAME,抖音 Helper
 
   # 小米
   - PROCESS-NAME-REGEX,(?i)^com\.xiaomi(\..+)?$
