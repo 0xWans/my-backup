@@ -1,15 +1,11 @@
 # 备份自用的一些配置文件
+## JetBrains激活（纯前端实现）
+[JetBrains在线激活](https://0xwans.github.io/my-backup/JetBrains/index.html)
 
-- [JetBrains/index.html](JetBrains/index.html)  # JetBrains激活（纯前端实现） 
-- [clash/Read.yaml](clash/Read.yaml)    # 个人使用的配置
-- [clash/clash.js](clash/clash.js)  # clash覆写配置 
-- [clash/config.yaml](clash/config.yaml)    # clash覆写配置  
-- [clash/rules/ChinaCustom.yaml](clash/rules/ChinaCustom.yaml)  # 自定义规则  
-- [clash/rules/DNSLeak.mrs](clash/rules/DNSLeak.mrs)  
-- [clash/rules/DNSLeak.yaml](clash/rules/DNSLeak.yaml)  
-- [clash/rules/GlobalCustom.yaml](clash/rules/GlobalCustom.yaml)
-- [mac/install.sh](mac/install.sh)　# mac安装脚本
-- [yakit/rules去重.py](yakit/rules去重.py)　# yakit去重
+[使用说明](https://github.com/0xWans/my-backup/blob/main/JetBrains/README.md)
+
+## Clash覆写配置  
+- [clash/config.yaml](clash/config.yaml)    
 
 
 # MacBook 裸核教程
