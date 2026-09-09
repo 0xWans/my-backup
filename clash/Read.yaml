@@ -17,6 +17,11 @@ keep-alive-interval: 15
 keep-alive-idle: 15
 disable-keep-alive: true
 
+hosts:
+  '*.clash.dev': 127.0.0.1
+  'alpha.clash.dev': '::1'
+  test.com: [1.1.1.1, 2.2.2.2]
+  baidu.com: google.com
 
 # GEO配置
 geodata-mode: true
@@ -28,14 +33,6 @@ geox-url:
   geosite: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
   mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
   asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
-
-# 时间同步
-ntp:
-  enable: true
-  write-to-system: false
-  server: time.apple.com
-  port: 123
-  interval: 30
 
 # 入站
 tun:
@@ -51,19 +48,19 @@ tun:
 proxies: 
   - { name: "直连",type: direct }
   - { name: "Clash",type: socks5,server: 127.0.0.1,port: 7890 }
-  - name: "1"
+  - name: "内网"
     type: socks5
     server: 
     port: 
     username: 
     password: 
-  - name: "2"
+  - name: "外网"
     type: socks5
     server: 127.0.0.1
     port: 
 
 # 代理锚点
-Proxy: &Proxy { proxies: [ "1","2" ] }
+Proxy: &Proxy { proxies: [ "内网","外网" ] }
 # 代理组
 proxy-groups:
   - name: 默认

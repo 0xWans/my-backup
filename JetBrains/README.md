@@ -1,5 +1,5 @@
 # 教程
-下载Z佬的插件 [ja-netfilter](https://gitee.com/ja-netfilter/ja-netfilter) 
+下载Z佬的插件 [ja-netfilter](https://gitee.com/ja-netfilter/ja-netfilter/releases/download/2025.3.0/ja-netfilter-2025.3.0.zip) 
 
 # 配置
 

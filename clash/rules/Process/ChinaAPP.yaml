@@ -6,6 +6,7 @@ payload:
   # 腾讯系
   - PROCESS-NAME-REGEX,(?i)^com\.tencent(\..+)?$
   - PROCESS-NAME,WeChat
+  - PROCESS-NAME,WeChatAppEx
   - PROCESS-NAME,WeChatAppEx Helper
   - PROCESS-NAME,QQ
   - PROCESS-NAME,QQ Helper
