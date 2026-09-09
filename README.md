@@ -2,7 +2,7 @@
 ## JetBrains激活（纯前端实现）
 [JetBrains在线激活](https://0xwans.github.io/my-backup/JetBrains/JetBrains-Online.html)
 
-[使用说明](https://github.com/0xWans/my-backup/blob/main/JetBrains/README.md)
+[使用说明](https://0xwans.github.io/my-backup/JetBrains/)
 
 ## Clash覆写配置  
 - [clash/config.yaml](clash/config.yaml)    
