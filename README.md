@@ -1,6 +1,6 @@
 # 备份自用的一些配置文件
 ## JetBrains激活（纯前端实现）
-[JetBrains在线激活](https://0xwans.github.io/my-backup/JetBrains/index.html)
+[JetBrains在线激活](https://0xwans.github.io/my-backup/JetBrains/JetBrains-Online.html)
 
 [使用说明](https://github.com/0xWans/my-backup/blob/main/JetBrains/README.md)
 
