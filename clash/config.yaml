@@ -54,10 +54,11 @@ allow-lan: true
 bind-address: '*'
 log-level: warning
 unified-delay: true
-find-process-mode: strict
 tcp-concurrent: true
+find-process-mode: strict
 keep-alive-interval: 15
 keep-alive-idle: 600
+etag-support: true
 
 
 # 规则选择缓存
@@ -72,7 +73,6 @@ dns:
   ipv6: true
   prefer-h3: false
   use-hosts: true
-  listen: 0.0.0.0:1053
   use-system-hosts: true
   respect-rules: true
   enhanced-mode: fake-ip
@@ -101,10 +101,10 @@ dns:
     - https://dns.alidns.com/dns-query#ecs=223.5.5.5/24&ecs-override=true
     - https://doh.pub/dns-query#ecs=223.5.5.5/24&ecs-override=true
   proxy-server-nameserver-policy: # 格式同nameserver-policy，仅用于节点域名解析，优先于proxy-server-nameserver查询，自定义机场在此添加DNS
-    '*.digital-nvme.com': 
-      - 8.138.94.132:8053
-    '*.yunsmartdns.com': 
-      - 8.138.94.132:8053
+    '*.llguanglisf.com':  # 飞鸟
+      - https://appdsv1.apiv2.a047.com/api-v2
+      - https://appdsv1.web.ak005.com/api-v2
+      - https://appdsv1.llguangli25n.com/api-v2
 
 
 # GEO配置
@@ -121,7 +121,7 @@ geox-url:
 # 入站
 tun:
   enable: false
-  stack: mixed
+  stack: mips
   auto-route: true
   auto-redirect: true
   auto-detect-interface: true
@@ -177,10 +177,10 @@ FilterUK: &FilterUK "(?i)(?=.*(🇬🇧|英国|英|GBR|UK|united ?kingdom|london
 FilterHM: &FilterHM "(?i)(?=.*(家宽))"
 
 # 代理组地区配置锚点 hidden: true 是为了隐藏地区分组，有需要显示出来的佬友可以删除
-BaseUT: &BaseUT { interval: 300, lazy: true, url: *UrlTest, hidden: true, include-all: true, type: url-test }
-BaseFB: &BaseFB { interval: 300, lazy: true, url: *UrlTest, hidden: true, include-all: true, type: fallback }
-BaseCR: &BaseCR { interval: 300, lazy: true, url: *UrlTest, hidden: true, include-all: true, type: load-balance, strategy: round-robin }
-BaseCH: &BaseCH { interval: 300, lazy: true, url: *UrlTest, hidden: true, include-all: true, type: load-balance, strategy: consistent-hashing }
+BaseUT: &BaseUT { interval: 600, url: *UrlTest, hidden: true, include-all: true, type: url-test }
+BaseFB: &BaseFB { interval: 600, url: *UrlTest, hidden: true, include-all: true, type: fallback }
+BaseCR: &BaseCR { interval: 600, url: *UrlTest, hidden: true, include-all: true, type: load-balance, strategy: round-robin }
+BaseCH: &BaseCH { interval: 600, url: *UrlTest, hidden: true, include-all: true, type: load-balance, strategy: consistent-hashing }
 
 # 代理组锚点
 SelectUL: &SelectUL { type: select, include-all: true, proxies: [ 香港自动, 家宽选择, 台湾自动, 狮城自动, 日本自动, 韩国自动, 美国自动, 英国自动, 香港-回退, 香港均衡-散列, 香港均衡-轮询, 台湾-回退, 台湾均衡-散列, 台湾均衡-轮询, 狮城-回退, 狮城均衡-散列, 狮城均衡-轮询, 日本-回退, 日本均衡-散列, 日本均衡-轮询, 韩国-回退, 韩国均衡-散列, 韩国均衡-轮询, 美国-回退, 美国均衡-散列, 美国均衡-轮询, 英国-回退, 英国均衡-散列, 英国均衡-轮询, DIRECT, REJECT ] }
@@ -189,7 +189,6 @@ SelectUS: &SelectUS { type: select, include-all: true, proxies: [ 美国自动, 
 SelectSG: &SelectSG { type: select, include-all: true, proxies: [ 狮城自动, 手动选择, 香港自动, 台湾自动, 日本自动, 韩国自动, 美国自动, 香港-回退, 香港均衡-散列, 香港均衡-轮询, 台湾-回退, 台湾均衡-散列, 台湾均衡-轮询, 狮城-回退, 狮城均衡-散列, 狮城均衡-轮询, 日本-回退, 日本均衡-散列, 日本均衡-轮询, 韩国-回退, 韩国均衡-散列, 韩国均衡-轮询, 美国-回退, 美国均衡-散列, 美国均衡-轮询, 英国-回退, 英国均衡-散列, 英国均衡-轮询, DIRECT, REJECT ] }
 SelectSL: &SelectSL { type: select, include-all: true, proxies: [ 手动选择, 香港自动, 台湾自动, 狮城自动, 日本自动, 韩国自动, 美国自动, 香港-回退, 香港均衡-散列, 香港均衡-轮询, 台湾-回退, 台湾均衡-散列, 台湾均衡-轮询, 狮城-回退, 狮城均衡-散列, 狮城均衡-轮询, 日本-回退, 日本均衡-散列, 日本均衡-轮询, 韩国-回退, 韩国均衡-散列, 韩国均衡-轮询, 美国-回退, 美国均衡-散列, 美国均衡-轮询, 英国-回退, 英国均衡-散列, 英国均衡-轮询, DIRECT, REJECT ] }
 SelectDR: &SelectDR { type: select, include-all: true, proxies: [ DIRECT, 手动选择, 香港自动, 台湾自动, 狮城自动, 日本自动, 韩国自动, 美国自动, 香港-回退, 香港均衡-散列, 香港均衡-轮询, 台湾-回退, 台湾均衡-散列, 台湾均衡-轮询, 狮城-回退, 狮城均衡-散列, 狮城均衡-轮询, 日本-回退, 日本均衡-散列, 日本均衡-轮询, 韩国-回退, 韩国均衡-散列, 韩国均衡-轮询, 美国-回退, 美国均衡-散列, 美国均衡-轮询, 英国-回退, 英国均衡-散列, 英国均衡-轮询, REJECT ] }
-
 # 代理组
 proxy-groups:
   - { name: 手动选择,     <<: *SelectUL, icon: https://fastly.jsdelivr.net/gh/0xWans/Qure@master/IconSet/Color/Rocket.png }
@@ -312,7 +311,7 @@ rules:
   - AND,((DST-PORT,443),(NETWORK,UDP),(NOT,((RULE-SET,ChinaIP))),(NOT,((RULE-SET,China)))),REJECT  # 阻止海外 QUIC 流量泄漏
   
   # 应用规则集
-  - RULE-SET,ChinaAPP,DIRECT  
+  - RULE-SET,ChinaAPP,DIRECT
 
   # 域名规则集-按照优先级顺序排列
   - RULE-SET,category-ads-all,REJECT
@@ -339,7 +338,7 @@ rules:
 
   # IP规则集-按照优先级顺序排列
   - RULE-SET,LanIP,DIRECT,no-resolve
-  - RULE-SET,ChinaIP,DIRECT,no-resolve
+  - RULE-SET,ChinaIP,DIRECT   # 大陆ip走直连，删除no-resolve之后会导致开销
   - RULE-SET,GoogleIP,Google,no-resolve
   - RULE-SET,TelegramIP,Telegram,no-resolve
   - RULE-SET,TwitterIP,Twitter(X),no-resolve

@@ -1,3 +1,49 @@
+# 代理
+proxies: 
+  - name: "Clash"
+    type: socks5
+    server: 127.0.0.1
+    port: 7890
+
+  - name: "Suo5"
+    type: socks5
+    server: 1.1.1.1
+    port: 1111
+    username: 
+    password: 
+
+  - name: "入口"
+    type: socks5
+    server: 1.1.1.1
+    port: 53749
+    username: admin
+    password: admin
+
+  - name: "二层"
+    type: socks5
+    server: 1.1.1.1
+    port: 53748
+    username: admin
+    password: admin
+
+
+
+# 代理组
+proxy-groups:  
+  - name: 内网
+    type: select
+    include-all: true
+    url: "http://connect.rom.miui.com/generate_204"
+
+  - name: 外网
+    type: select
+    include-all: true
+    url: "https://www.gstatic.com/generate_204"
+
+rules:
+  - GEOIP,private,内网
+  - MATCH,外网
+
 # 通用配置
 mode: rule
 ipv6: true
@@ -5,17 +51,7 @@ mixed-port: 7890
 allow-lan: true
 bind-address: 0.0.0.0
 log-level: info
-unified-delay: true
 find-process-mode: always
-global-client-fingerprint: chrome
-# 规则选择缓存
-profile:
-  store-selected: true
-  store-fake-ip: true
-tcp-concurrent: true
-keep-alive-interval: 15
-keep-alive-idle: 15
-disable-keep-alive: true
 
 hosts:
   '*.clash.dev': 127.0.0.1
@@ -34,6 +70,12 @@ geox-url:
   mmdb: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb"
   asn: "https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
 
+# 面板设置
+external-ui-name: zashboard
+secret: Red
+external-ui-url: https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip
+external-controller: '0.0.0.0:9090'
+
 # 入站
 tun:
   enable: true
@@ -43,40 +85,3 @@ tun:
   auto-detect-interface: true
   dns-hijack:
   - any:53
-
-# 代理
-proxies: 
-  - { name: "直连",type: direct }
-  - { name: "Clash",type: socks5,server: 127.0.0.1,port: 7890 }
-  - name: "内网"
-    type: socks5
-    server: 
-    port: 
-    username: 
-    password: 
-  - name: "外网"
-    type: socks5
-    server: 127.0.0.1
-    port: 
-
-# 代理锚点
-Proxy: &Proxy { proxies: [ "内网","外网" ] }
-# 代理组
-proxy-groups:
-  - name: 默认
-    type: select
-    proxies: [负载均衡, 链式代理, 直连, Clash]
-  - name: 负载均衡
-    type: load-balance
-    url: ''
-    strategy: round-robin
-    <<: *Proxy
-  - name: 链式代理
-    type: relay
-    strategy: round-robin
-    <<: *Proxy
-
-rules:
-  - GEOIP,private,默认
-  - MATCH,Clash
-  - IP-CIDR,0.0.0.0/24,默认
