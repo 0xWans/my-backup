@@ -24,7 +24,7 @@ PF: &PF { exclude-filter: *FilterPP, type: file, interval: 600, health-check: { 
 proxy-providers:
   main:
     <<: *PU
-    url: https://anyland.club/#/register?code=R7vdKxbE
+    url: https://www.sibker.com/register?invite_code=IuA1vdgT
     path: ./proxy_provider/main.yaml
     header:
       User-Agent:
@@ -101,13 +101,13 @@ dns:
     - https://dns.alidns.com/dns-query#ecs=223.5.5.5/24&ecs-override=true
     - https://doh.pub/dns-query#ecs=223.5.5.5/24&ecs-override=true
   proxy-server-nameserver-policy: # 格式同nameserver-policy，仅用于节点域名解析，优先于proxy-server-nameserver查询，自定义机场在此添加DNS
-    # '*.llguanglisf.com':
+    # "*.llguanglisf.com":
     #   - https://appdsv1.apiv2.a047.com/api-v2
     #   - https://appdsv1.web.ak005.com/api-v2
     #   - https://appdsv1.llguangli25n.com/api-v2
-    # '*.digital-nvme.com': 
+    # "*.digital-nvme.com": 
     #   - 8.138.94.132:8053
-    # '*.yunsmartdns.com': 
+    # "*.yunsmartdns.com": 
     #   - 8.138.94.132:8053
 
 
