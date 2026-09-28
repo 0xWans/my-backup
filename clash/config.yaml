@@ -70,7 +70,7 @@ profile:
 # DNS配置
 dns:
   enable: true
-  ipv6: true
+  ipv6: false
   prefer-h3: false
   use-hosts: true
   use-system-hosts: true
@@ -101,10 +101,14 @@ dns:
     - https://dns.alidns.com/dns-query#ecs=223.5.5.5/24&ecs-override=true
     - https://doh.pub/dns-query#ecs=223.5.5.5/24&ecs-override=true
   proxy-server-nameserver-policy: # 格式同nameserver-policy，仅用于节点域名解析，优先于proxy-server-nameserver查询，自定义机场在此添加DNS
-    '*.llguanglisf.com':  # 飞鸟
-      - https://appdsv1.apiv2.a047.com/api-v2
-      - https://appdsv1.web.ak005.com/api-v2
-      - https://appdsv1.llguangli25n.com/api-v2
+    # '*.llguanglisf.com':
+    #   - https://appdsv1.apiv2.a047.com/api-v2
+    #   - https://appdsv1.web.ak005.com/api-v2
+    #   - https://appdsv1.llguangli25n.com/api-v2
+    # '*.digital-nvme.com': 
+    #   - 8.138.94.132:8053
+    # '*.yunsmartdns.com': 
+    #   - 8.138.94.132:8053
 
 
 # GEO配置
@@ -121,7 +125,7 @@ geox-url:
 # 入站
 tun:
   enable: false
-  stack: mips
+  stack: mixed
   auto-route: true
   auto-redirect: true
   auto-detect-interface: true
