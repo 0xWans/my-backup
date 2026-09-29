@@ -66,3 +66,6 @@ payload:
 
   # 微博
   - PROCESS-NAME,com.sina.weibo
+
+  # 理财
+  - PROCESS-NAME,com.hexin.plat.android
