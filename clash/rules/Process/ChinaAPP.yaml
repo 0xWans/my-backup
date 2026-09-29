@@ -10,6 +10,10 @@ payload:
   - PROCESS-NAME,WeChatAppEx Helper
   - PROCESS-NAME,QQ
   - PROCESS-NAME,QQ Helper
+  - PROCESS-NAME,QQ.exe
+  - PROCESS-NAME,Weixin.exe
+  - PROCESS-NAME,WeChat.exe
+  - PROCESS-NAME,WeChatAppEx.exe
 
   # 阿里巴巴
   - PROCESS-NAME-REGEX,(?i)^com\.alibaba(\..+)?$
