@@ -29,6 +29,7 @@ payload:
   - PROCESS-NAME,Lark Helper
   - PROCESS-NAME,com.phoenix.read
   - PROCESS-NAME,com.dragon.read
+  - PROCESS-NAME,com.luna.music
   - PROCESS-NAME,com.ss.android.auto
   - PROCESS-NAME,抖音 Helper
 
