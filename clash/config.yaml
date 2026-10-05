@@ -1,6 +1,6 @@
 # 地址: https://github.com/Wans-OS/my-backup
 # 作者: Wans
-# 更新: 2026-04-29 19:38:17
+# 更新: 2026-09-30 08:58:07
 # 描述: 在proxy-providers加入您的机场订阅链接 (代理提供者)
 
 # 订阅锚点，排除了一些节点，例如 包含剩余, 官网, 到期, 也可以在exclude-filter添加你需要排除的节点
@@ -8,18 +8,17 @@ FilterPP: &FilterPP "Expire|到期|剩余|Traffic|网址|官网|过期|地址"
 
 # 测速地址
 # YouTube
-# https://www.youtube.com/generate_204
+# http://www.youtube.com/generate_204
 # Google
-# https://www.gstatic.com/generate_204
-# https://www.google.com/generate_204
-# https://www.google.cn/generate_204
+# http://www.gstatic.com/generate_204
+# http://www.google.com/generate_204
 # Cloudflare
-# https://cp.cloudflare.com/generate_204
-# https://www.qualcomm.cn/generate_204
-UrlTest:  &UrlTest 'https://www.gstatic.com/generate_204'
+# http://cp.cloudflare.com/generate_204
+# http://www.qualcomm.cn/generate_204
+UrlTest:  &UrlTest 'http://www.gstatic.com/generate_204'
 
-PU: &PU { exclude-filter: *FilterPP, type: http, interval: 600, health-check: { enable: true, url: *UrlTest, interval: 300 } }
-PF: &PF { exclude-filter: *FilterPP, type: file, interval: 600, health-check: { enable: true, url: *UrlTest, interval: 300 } }
+PU: &PU { exclude-filter: *FilterPP, type: http, interval: 43200, health-check: { enable: true, url: *UrlTest, interval: 300 } }
+PF: &PF { exclude-filter: *FilterPP, type: file, interval: 43200, health-check: { enable: true, url: *UrlTest, interval: 300 } }
 # 官方配置文档: https://wiki.metacubex.one/config/proxy-providers/
 proxy-providers:
   main:
@@ -63,8 +62,9 @@ etag-support: true
 # 入站
 tun:
   enable: true
-  stack: mips
+  stack: mixed
   auto-route: true
+  strict-route: true
   auto-redirect: true
   auto-detect-interface: true
   dns-hijack: [ any:53, tcp://any:53 ]
