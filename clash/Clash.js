@@ -1,4 +1,5 @@
 /**
+ * ❗❗❗停止更新，后续只更新config.yaml (https://github.com/0xWans/my-backup/blob/main/clash/config.yaml)
  * 个人备份使用，该脚本适用与Mihomo Party和 Clash Verge Rev
  * Clash Verge Rev 全局扩展脚本（懒人配置）/ Mihomo Party 覆写脚本
  * URL: https://github.com/Wans-OS/my-backup
@@ -9,7 +10,7 @@ const proxyProviders = {
   "p1": {
     "type": "http",
     // 订阅 链接
-    "url": "https://baidu.com",
+    "url": "https://www.sibker.com/register?invite_code=IuA1vdgT",
     // 自动更新时间 86400(秒) / 3600 = 24小时
     "interval": 86400,
     "override": {
@@ -19,7 +20,7 @@ const proxyProviders = {
   },
   "p2": {
     "type": "http",
-    "url": "https://google.com",
+    "url": "https://www.sibker.com/register?invite_code=IuA1vdgT",
     "interval": 86400,
     "override": {
       "additional-prefix": "p2 |"

@@ -5,7 +5,9 @@
 [使用说明](https://0xwans.github.io/my-backup/JetBrains/)
 
 ## Clash覆写配置  
-- [clash/config.yaml](clash/config.yaml)    
+- [clash/config.yaml](clash/config.yaml)
+- [github-raw](https://raw.githubusercontent.com/0xWans/my-backup/refs/heads/main/clash/config.yaml)
+- [jsdelivr-cdn](https://cdn.jsdelivr.net/gh/0xWans/my-backup@main/clash/config.yaml)
 
 
 # MacBook 裸核教程
