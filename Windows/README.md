@@ -14,11 +14,11 @@ irm https://cdn.jsdelivr.net/gh/0xWans/my-backup@main/Windows/Windows-Toolbox.ps
 
 ```
 [1] 用户文件夹
-      迁移用户文件夹(可选择目标盘) / 查看当前路径 / 恢复默认路径
+        迁移用户文件夹(可选择目标盘 / 可一定程度改善C盘存储空间) / 查看当前路径 / 恢复默认路径
 [2] 软件与存储位置
       创建软件安装目录 / 打开新内容保存位置设置 / 修改临时文件目录
 [3] 清理与系统
-      清理临时文件 / 查看 Windows 激活状态
+      清理临时文件 / 激活Windows & Office / 查看 Windows 激活状态
 ```
 
 ## 注意
