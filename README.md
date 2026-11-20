@@ -1,4 +1,9 @@
 # 备份自用的一些配置文件
+
+# 子目录
+- [JetBrains](JetBrains)
+- [Windows](Windows)
+
 ## JetBrains激活（纯前端实现）
 [JetBrains在线激活](https://0xwans.github.io/my-backup/JetBrains/JetBrains-Online.html)
 
