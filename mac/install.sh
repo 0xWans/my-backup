@@ -216,8 +216,8 @@ fi
 # 配置 Git 代理和用户信息
 git config --global http.proxy 'http://127.0.0.1:7890'
 git config --global https.proxy 'http://127.0.0.1:7890'
-git config --global user.name "Wans"
-git config --global user.email "wa.ns@qq.com"
+git config --global user.name "0xWans"
+git config --global user.email **@qq.com"
 
 # upx
 if [ ! -f /usr/local/bin/upx ]; then
